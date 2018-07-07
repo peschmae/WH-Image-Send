@@ -105,12 +105,10 @@ class WhatsappImageSendLayer(YowInterfaceLayer):
         sleep(2)
         print("Send image '%s' to %s" % (self.image_path, self.phone_number))
         self.image_send(number=self.phone_number, path=self.image_path, caption="Test Test Test")
-        print("Image send, waiting 5 seconds before disconnect")
-        sleep(5)
-        self.disconnect()
-        print("Disconnected from WhatsApp")
+        print("Image send, waiting for image send to finish")
 
     def doSendMedia(self, mediaType, filePath, url, to, ip=None, caption=None):
+        self.output("Do send media called %s" % filePath)
         if mediaType == RequestUploadIqProtocolEntity.MEDIA_TYPE_IMAGE:
             entity = ImageDownloadableMediaMessageProtocolEntity.fromFilePath(filePath, url, ip, to, caption=caption)
         elif mediaType == RequestUploadIqProtocolEntity.MEDIA_TYPE_AUDIO:
@@ -120,11 +118,13 @@ class WhatsappImageSendLayer(YowInterfaceLayer):
         elif mediaType == RequestUploadIqProtocolEntity.MEDIA_TYPE_DOCUMENT:
             entity = DocumentDownloadableMediaMessageProtocolEntity.fromFilePath(filePath, url, ip, to)
         self.toLower(entity)
+        self.output("Should be save to disconnect")
 
     ########### callbacks ############
 
     def onRequestUploadResult(self, jid, mediaType, filePath, resultRequestUploadIqProtocolEntity,
                               requestUploadIqProtocolEntity, caption=None):
+        self.output("Request upload for file %s to %s received" % (filePath, jid))
 
         if resultRequestUploadIqProtocolEntity.isDuplicate():
             self.doSendMedia(mediaType, filePath, resultRequestUploadIqProtocolEntity.getUrl(), jid,

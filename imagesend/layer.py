@@ -100,7 +100,7 @@ class WhatsappImageSendLayer(YowInterfaceLayer):
         print("Syncing contact: %s" % self.phone_number)
         self.contacts_sync(contacts=self.phone_number)
         sleep(2)
-        print("Syncing: %s" % self.phone_number)
+        print("Set state to typing to : %s" % self.phone_number)
         self.state_typing(number=self.phone_number)
         sleep(2)
         print("Send image '%s' to %s" % (self.image_path, self.phone_number))
@@ -119,6 +119,8 @@ class WhatsappImageSendLayer(YowInterfaceLayer):
             entity = DocumentDownloadableMediaMessageProtocolEntity.fromFilePath(filePath, url, ip, to)
         self.toLower(entity)
         self.output("Should be save to disconnect")
+        sleep(2)
+        self.disconnect()
 
     ########### callbacks ############
 

@@ -110,67 +110,6 @@ class WhatsappImageSendLayer(YowInterfaceLayer):
         self.disconnect()
         print("Disconnected from WhatsApp")
 
-    @ProtocolEntityCallback("failure")
-    def onFailure(self, entity):
-        self.connected = False
-        self.output("Login Failed, reason: %s" % entity.getReason(), prompt = False)
-
-    @ProtocolEntityCallback("notification")
-    def onNotification(self, notification):
-        notificationData = notification.__str__()
-        if notificationData:
-            self.output(notificationData, tag="Notification")
-        else:
-            self.output("From :%s, Type: %s" % (self.jidToAlias(notification.getFrom()), notification.getType()),
-                        tag="Notification"
-                        )
-        if self.sendReceipts:
-            self.toLower(notification.ack())
-
-    @ProtocolEntityCallback("message")
-    def onMessage(self, message):
-        messageOut = ""
-        if message.getType() == "text":
-            messageOut = self.getTextMessageBody(message)
-        elif message.getType() == "media":
-            messageOut = self.getMediaMessageBody(message)
-        else:
-            messageOut = "Unknown message type %s " % message.getType()
-            self.output(messageOut.toProtocolTreeNode())
-
-
-        formattedDate = datetime.datetime.fromtimestamp(message.getTimestamp()).strftime('%d-%m-%Y %H:%M')
-        sender = message.getFrom() if not message.isGroupMessage() else "%s/%s" % (message.getParticipant(False), message.getFrom())
-        output = self.__class__.MESSAGE_FORMAT.format(
-            FROM=sender,
-            TIME=formattedDate,
-            MESSAGE=messageOut,
-            MESSAGE_ID=message.getId()
-            )
-
-        self.output(output, tag=None, prompt = not self.sendReceipts)
-        if self.sendReceipts:
-            self.toLower(message.ack(self.sendRead))
-            self.output("Sent delivered receipt"+" and Read" if self.sendRead else "", tag = "Message %s" % message.getId())
-
-
-    def getTextMessageBody(self, message):
-        return message.getBody()
-
-    def getMediaMessageBody(self, message):
-        if message.getMediaType() in ("image", "audio", "video"):
-            return self.getDownloadableMediaMessageBody(message)
-        else:
-            return "[Media Type: %s]" % message.getMediaType()
-
-
-    def getDownloadableMediaMessageBody(self, message):
-         return "[Media Type:{media_type}, Size:{media_size}, URL:{media_url}]".format(
-            media_type=message.getMediaType(),
-            media_size=message.getMediaSize(),
-            media_url=message.getMediaUrl()
-            )
-
     def doSendMedia(self, mediaType, filePath, url, to, ip=None, caption=None):
         if mediaType == RequestUploadIqProtocolEntity.MEDIA_TYPE_IMAGE:
             entity = ImageDownloadableMediaMessageProtocolEntity.fromFilePath(filePath, url, ip, to, caption=caption)

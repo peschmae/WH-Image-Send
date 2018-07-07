@@ -28,22 +28,4 @@ if __name__=="__main__":
     stack.broadcastEvent(YowLayerEvent(YowNetworkLayer.EVENT_STATE_CONNECT))   #sending the connect signal
     stack.setProp(PROP_IDENTITY_AUTOTRUST, True)
     print("start stack.loop")
-    stack.loop() #this is the program mainloop
-
-
-#    path="/home/peschmae/projects/photobooth/image-send/peterclown.jpg"
-#    whatsapp_stack = WhatsappImageStack(credentials=credentials)
-#    print("Trying to login")
-#    whatsapp_stack.login(username=username, password=password)
-#    print("Syncing: %s" % phone_number)
-#    whatsapp_stack.contacts_sync(contact=phone_number)
-#    sleep(2)
-#    print("Syncing: %s" % phone_number)
-#    whatsapp_stack.state_typing(number=phone_number)
-#    sleep(2)
-#    print("Send image '%s' to %s" % (path, phone_number))
-#    whatsapp_stack.image_send(number=phone_number, path=path, caption="Test Test Test")
-#    print("Image send, waiting 5 seconds before disconnect")
-#    sleep(5)
-#    whatsapp_stack.disconnect()
-#    print("Disconnected from WhatsApp")
+    stack.loop() #this is the program mainloop. We disconnect from WhatsApp in the main loop, to get back the prompt

@@ -20,6 +20,6 @@ python-magic==0.4.15
 requests==2.19.1
 six==1.10.0
 typing==3.6.4
-urllib3==1.23
+urllib3==1.24.2
 Wand==0.4.4
 yowsup2==2.5.10

@@ -17,7 +17,7 @@ python-axolotl==0.1.42
 python-axolotl-curve25519==0.4.1.post2
 python-dateutil==2.7.3
 python-magic==0.4.15
-requests==2.19.1
+requests==2.20.0
 six==1.10.0
 typing==3.6.4
 urllib3==1.24.2
